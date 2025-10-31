@@ -272,21 +272,138 @@ body {
     }
 }
 
+/* Floating Weapon Selector Button */
+.weapon-selector-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+    border: 4px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 107, 107, 0.5);
+    transition: all 0.3s ease;
+    z-index: 100;
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+.weapon-selector-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 107, 107, 0.7);
+}
+
+.weapon-selector-btn:active {
+    transform: scale(0.95);
+}
+
+@keyframes buttonPulse {
+    0%, 100% { 
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 107, 107, 0.5);
+    }
+    50% { 
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 107, 107, 0.8);
+    }
+}
+
+.current-weapon-icon {
+    font-size: 2.5em;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.weapon-selector-label {
+    font-size: 0.6em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
+/* Weapons Overlay */
+.weapons-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 900;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.weapons-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Weapons Panel */
 .weapons-panel {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(20, 20, 40, 0.6) 100%);
-    padding: 25px;
-    border-radius: 20px;
-    backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 70vh;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.98) 100%);
+    padding: 0;
+    border-radius: 30px 30px 0 0;
+    backdrop-filter: blur(20px);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+    box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.weapons-panel.open {
+    transform: translateY(0);
+}
+
+.weapons-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.close-weapons-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-weapons-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
 }
 
 .weapons-panel h3 {
     color: #fff;
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.8em;
+    margin: 0;
+    font-size: 1.5em;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -300,6 +417,27 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
+    padding: 25px;
+    overflow-y: auto;
+    max-height: calc(70vh - 80px);
+}
+
+.weapons-grid::-webkit-scrollbar {
+    width: 10px;
+}
+
+.weapons-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.weapons-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+.weapons-grid::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .weapon-card {

@@ -35,6 +35,11 @@ class Game {
     private gameOverScreen: HTMLElement;
     private damageNumbersContainer: HTMLElement;
     private weaponsGrid: HTMLElement;
+    private weaponsPanel: HTMLElement;
+    private weaponSelectorBtn: HTMLElement;
+    private currentWeaponIcon: HTMLElement;
+    private weaponsOverlay: HTMLElement;
+    private closeWeaponsBtn: HTMLElement;
     
     private health: number = 100;
     private maxHealth: number = 100;
@@ -67,6 +72,11 @@ class Game {
         this.gameOverScreen = document.getElementById('gameOverScreen')!;
         this.damageNumbersContainer = document.getElementById('damageNumbers')!;
         this.weaponsGrid = document.getElementById('weaponsGrid')!;
+        this.weaponsPanel = document.getElementById('weaponsPanel')!;
+        this.weaponSelectorBtn = document.getElementById('weaponSelectorBtn')!;
+        this.currentWeaponIcon = document.getElementById('currentWeaponIcon')!;
+        this.weaponsOverlay = document.getElementById('weaponsOverlay')!;
+        this.closeWeaponsBtn = document.getElementById('closeWeaponsBtn')!;
         
         this.selectedWeapon = this.weapons[0];
         
@@ -91,6 +101,23 @@ class Game {
         
         const restartBtn = document.getElementById('restartBtn')!;
         restartBtn.addEventListener('click', () => this.restart());
+        
+        // Weapon selector button
+        this.weaponSelectorBtn.addEventListener('click', () => this.openWeaponsPanel());
+        this.closeWeaponsBtn.addEventListener('click', () => this.closeWeaponsPanel());
+        this.weaponsOverlay.addEventListener('click', () => this.closeWeaponsPanel());
+    }
+    
+    private openWeaponsPanel(): void {
+        this.weaponsPanel.classList.add('open');
+        this.weaponsOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    private closeWeaponsPanel(): void {
+        this.weaponsPanel.classList.remove('open');
+        this.weaponsOverlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     private renderWeapons(): void {
@@ -149,7 +176,9 @@ class Game {
             weaponCard.addEventListener('click', () => {
                 if (canAfford && this.buyWeapon(weapon)) {
                     this.selectedWeapon = weapon;
+                    this.currentWeaponIcon.textContent = weapon.icon;
                     this.renderWeapons();
+                    this.closeWeaponsPanel();
                 }
             });
             

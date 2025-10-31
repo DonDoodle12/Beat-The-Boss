@@ -46,12 +46,25 @@
             <div class="damage-numbers" id="damageNumbers"></div>
         </div>
 
-        <div class="weapons-panel">
-            <h3>WEAPONS</h3>
+        <!-- Floating Weapon Button -->
+        <button class="weapon-selector-btn" id="weaponSelectorBtn">
+            <div class="current-weapon-icon" id="currentWeaponIcon">👊</div>
+            <div class="weapon-selector-label">WEAPONS</div>
+        </button>
+
+        <!-- Weapons Panel (Hidden by default) -->
+        <div class="weapons-panel" id="weaponsPanel">
+            <div class="weapons-panel-header">
+                <h3>SELECT WEAPON</h3>
+                <button class="close-weapons-btn" id="closeWeaponsBtn">✕</button>
+            </div>
             <div class="weapons-grid" id="weaponsGrid">
                 <!-- Weapons will be dynamically added -->
             </div>
         </div>
+        
+        <!-- Overlay for weapon panel -->
+        <div class="weapons-overlay" id="weaponsOverlay"></div>
 
         <div class="game-over-screen" id="gameOverScreen">
             <h2>BOSS DEFEATED!</h2>
