@@ -4,32 +4,47 @@ A fun and addictive TypeScript game inspired by the popular "Beat the Boss" mobi
 
 ## Features ✨
 
-- **Multiple Weapons**: 8 different weapons to unlock, from a simple punch to a devastating rocket!
+- **Professional Weapon Panel**: 8 detailed weapon cards with stats, descriptions, and rarity levels
+- **All Weapons Free**: No grinding required - all weapons available from the start!
 - **Dynamic Particle Effects**: Beautiful particle explosions with each hit
-- **Weapon Shop System**: Earn money by dealing damage and buy better weapons
+- **Detailed Weapon Stats**: See damage, speed, and impact ratings for each weapon
+- **Rarity System**: Weapons classified from Common to Legendary with unique colors
+- **Smooth Animations**: Floating icons, pulsing glows, and hover effects
 - **Health System**: Watch the boss's health decrease with a dynamic health bar
 - **Visual Feedback**: Boss expressions change as they take damage
 - **Damage Numbers**: See floating damage numbers with each hit
 - **Game Over Screen**: Track your total damage and money earned
-- **Responsive Design**: Works on desktop and mobile devices
+- **Responsive Design**: Works perfectly on desktop and mobile devices
 
-## Weapons 🔫
+## Weapons Arsenal 🔫
 
-1. **👊 Punch** - 5 damage (FREE)
-2. **🏏 Bat** - 10 damage ($100)
-3. **🔨 Hammer** - 15 damage ($200)
-4. **🔪 Knife** - 20 damage ($300)
-5. **🔫 Gun** - 30 damage ($500)
-6. **💣 Bomb** - 50 damage ($800)
-7. **⚡ Lightning** - 75 damage ($1200)
-8. **🚀 Rocket** - 100 damage ($2000)
+All weapons are **FREE** to use! Switch between them anytime:
+
+1. **👊 Punch** - 5 damage (Common) - Basic melee attack
+2. **🏏 Bat** - 10 damage (Common) - Swing with force
+3. **🔨 Hammer** - 15 damage (Uncommon) - Heavy crushing blow
+4. **🔪 Knife** - 20 damage (Uncommon) - Sharp and deadly
+5. **🔫 Gun** - 30 damage (Rare) - Rapid fire weapon
+6. **💣 Bomb** - 50 damage (Rare) - Explosive damage
+7. **⚡ Lightning** - 75 damage (Epic) - Electrifying power
+8. **🚀 Rocket** - 100 damage (Legendary) - Ultimate destruction
+
+### Weapon Rarity System
+- **Common** (Gray) - Basic weapons
+- **Uncommon** (Green) - Enhanced weapons
+- **Rare** (Blue) - Powerful weapons
+- **Epic** (Purple) - Very powerful weapons
+- **Legendary** (Orange) - Ultimate weapons with special glow effects!
 
 ## How to Play 🎯
 
 1. **Click on the Boss**: Simply click on the boss character to attack
-2. **Earn Money**: Each hit earns you money equal to the damage dealt
-3. **Buy Weapons**: Use your earned money to purchase more powerful weapons
-4. **Switch Weapons**: Click on any unlocked weapon to select it
+2. **Choose Your Weapon**: All weapons are free! Click any weapon card to equip it
+3. **Check Weapon Stats**: Hover over weapons to see detailed stats:
+   - ⚔️ **Damage**: How much damage per hit
+   - ⚡ **Speed**: Attack/fire rate
+   - 💥 **Impact**: Particle effect intensity
+4. **Switch Anytime**: Change weapons mid-battle for different strategies
 5. **Defeat the Boss**: Reduce the boss's health to 0 to win!
 6. **Play Again**: Click "FIGHT AGAIN" to restart with a fresh boss
 
@@ -89,10 +104,11 @@ airmax/
 - Boss reacts with shake animation on hit
 - Damage numbers float up from hit location
 
-### Economy System
-- Start with $1000
-- Earn money equal to damage dealt
-- Weapons are permanent purchases (buy once, use forever)
+### Weapon System
+- All 8 weapons are FREE from the start
+- No grinding or purchases required
+- Switch weapons instantly during combat
+- Each weapon has unique stats and particle effects
 
 ### Boss States
 - **Normal**: Green/Yellow colors
@@ -102,10 +118,12 @@ airmax/
 
 ## Tips & Tricks 💡
 
-1. **Save Your Money**: Don't buy every weapon immediately. Focus on high-damage weapons!
-2. **Watch the Health Bar**: It changes color as the boss takes more damage
+1. **Try All Weapons**: Experiment with different weapons to find your favorite!
+2. **Watch the Health Bar**: It changes color as the boss takes more damage (Green → Orange → Red)
 3. **Click Fast**: Rapid clicking deals more damage per second
-4. **Combo Strategy**: Start with the free punch to earn initial money, then upgrade quickly
+4. **Strategic Switching**: Use faster weapons for quick hits, heavy weapons for big impact
+5. **Rarity Matters**: Higher rarity weapons = more damage and visual effects
+6. **Legendary Power**: The Rocket (Legendary) has the most impressive particle effects!
 
 ## Browser Compatibility 🌐
 
@@ -119,22 +137,33 @@ Works best in modern browsers:
 
 Want to modify the game? Here are some easy changes:
 
-### Change Starting Money
-Edit `src/game.ts`, line ~25:
-```typescript
-private money: number = 5000; // Default is 1000
-```
-
 ### Adjust Boss Health
-Edit `src/game.ts`, line ~23:
+Edit `src/game.ts`, line ~36:
 ```typescript
 private maxHealth: number = 200; // Default is 100
 ```
 
 ### Add New Weapons
-Edit the weapons array in `src/game.ts` around line ~30:
+Edit the weapons array in `src/game.ts` around line ~47:
 ```typescript
-{ id: 'custom', name: '✨ Custom', damage: 150, cost: 3000, icon: '✨', color: '#ff00ff', particleCount: 60 }
+{ 
+    id: 'custom', 
+    name: '✨ Custom', 
+    damage: 150, 
+    cost: 0, 
+    icon: '✨', 
+    color: '#ff00ff', 
+    particleCount: 60,
+    description: 'Your custom weapon',
+    rarity: 'Legendary',
+    fireRate: 'Ultra Fast'
+}
+```
+
+### Change Weapon Damage
+Simply edit the damage value in the weapons array:
+```typescript
+{ id: 'punch', name: '👊 Punch', damage: 50, ... } // Buff the punch!
 ```
 
 Don't forget to run `npm run build` after making changes!

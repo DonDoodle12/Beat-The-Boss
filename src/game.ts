@@ -18,6 +18,9 @@ interface Weapon {
     icon: string;
     color: string;
     particleCount: number;
+    description: string;
+    rarity: string;
+    fireRate: string;
 }
 
 class Game {
@@ -42,14 +45,14 @@ class Game {
     private isGameOver: boolean = false;
     
     private weapons: Weapon[] = [
-        { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5 },
-        { id: 'bat', name: '🏏 Bat', damage: 10, cost: 100, icon: '🏏', color: '#4ecdc4', particleCount: 8 },
-        { id: 'hammer', name: '🔨 Hammer', damage: 15, cost: 200, icon: '🔨', color: '#ffe66d', particleCount: 12 },
-        { id: 'knife', name: '🔪 Knife', damage: 20, cost: 300, icon: '🔪', color: '#ff6b9d', particleCount: 15 },
-        { id: 'gun', name: '🔫 Gun', damage: 30, cost: 500, icon: '🔫', color: '#c44569', particleCount: 20 },
-        { id: 'bomb', name: '💣 Bomb', damage: 50, cost: 800, icon: '💣', color: '#f38181', particleCount: 30 },
-        { id: 'lightning', name: '⚡ Lightning', damage: 75, cost: 1200, icon: '⚡', color: '#ffeb3b', particleCount: 40 },
-        { id: 'rocket', name: '🚀 Rocket', damage: 100, cost: 2000, icon: '🚀', color: '#ff5722', particleCount: 50 }
+        { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5, description: 'Basic melee attack', rarity: 'Common', fireRate: 'Fast' },
+        { id: 'bat', name: '🏏 Bat', damage: 10, cost: 0, icon: '🏏', color: '#4ecdc4', particleCount: 8, description: 'Swing with force', rarity: 'Common', fireRate: 'Fast' },
+        { id: 'hammer', name: '🔨 Hammer', damage: 15, cost: 0, icon: '🔨', color: '#ffe66d', particleCount: 12, description: 'Heavy crushing blow', rarity: 'Uncommon', fireRate: 'Medium' },
+        { id: 'knife', name: '🔪 Knife', damage: 20, cost: 0, icon: '🔪', color: '#ff6b9d', particleCount: 15, description: 'Sharp and deadly', rarity: 'Uncommon', fireRate: 'Fast' },
+        { id: 'gun', name: '🔫 Gun', damage: 30, cost: 0, icon: '🔫', color: '#c44569', particleCount: 20, description: 'Rapid fire weapon', rarity: 'Rare', fireRate: 'Very Fast' },
+        { id: 'bomb', name: '💣 Bomb', damage: 50, cost: 0, icon: '💣', color: '#f38181', particleCount: 30, description: 'Explosive damage', rarity: 'Rare', fireRate: 'Medium' },
+        { id: 'lightning', name: '⚡ Lightning', damage: 75, cost: 0, icon: '⚡', color: '#ffeb3b', particleCount: 40, description: 'Electrifying power', rarity: 'Epic', fireRate: 'Fast' },
+        { id: 'rocket', name: '🚀 Rocket', damage: 100, cost: 0, icon: '🚀', color: '#ff5722', particleCount: 50, description: 'Ultimate destruction', rarity: 'Legendary', fireRate: 'Medium' }
     ];
 
     constructor() {
@@ -96,6 +99,7 @@ class Game {
         this.weapons.forEach(weapon => {
             const weaponCard = document.createElement('div');
             weaponCard.className = 'weapon-card';
+            weaponCard.setAttribute('data-rarity', weapon.rarity.toLowerCase());
             
             if (weapon.id === this.selectedWeapon.id) {
                 weaponCard.classList.add('selected');
@@ -107,10 +111,39 @@ class Game {
             }
             
             weaponCard.innerHTML = `
-                <div class="weapon-icon">${weapon.icon}</div>
-                <div class="weapon-name">${weapon.name}</div>
-                <div class="weapon-damage">⚔️ ${weapon.damage}</div>
-                <div class="weapon-cost">${weapon.cost === 0 ? 'FREE' : '$' + weapon.cost}</div>
+                <div class="weapon-header">
+                    <span class="weapon-rarity ${weapon.rarity.toLowerCase()}">${weapon.rarity}</span>
+                </div>
+                <div class="weapon-icon-container">
+                    <div class="weapon-icon">${weapon.icon}</div>
+                    <div class="weapon-glow" style="background: ${weapon.color};"></div>
+                </div>
+                <div class="weapon-info">
+                    <div class="weapon-name">${weapon.name.replace(/👊|🏏|🔨|🔪|🔫|💣|⚡|🚀/g, '').trim()}</div>
+                    <div class="weapon-description">${weapon.description}</div>
+                </div>
+                <div class="weapon-stats">
+                    <div class="stat-row">
+                        <span class="stat-icon">⚔️</span>
+                        <span class="stat-label">Damage</span>
+                        <span class="stat-value">${weapon.damage}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-label">Speed</span>
+                        <span class="stat-value">${weapon.fireRate}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-icon">💥</span>
+                        <span class="stat-label">Impact</span>
+                        <span class="stat-value">${weapon.particleCount}</span>
+                    </div>
+                </div>
+                <div class="weapon-footer">
+                    <div class="weapon-cost ${weapon.cost === 0 ? 'free' : ''}">
+                        ${weapon.cost === 0 ? '<span class="free-tag">✓ FREE</span>' : '$' + weapon.cost}
+                    </div>
+                </div>
             `;
             
             weaponCard.addEventListener('click', () => {
@@ -285,16 +318,16 @@ class Game {
         this.isGameOver = false;
         this.particles = [];
         
-        // Reset weapon costs
+        // Reset weapon costs (all free)
         this.weapons = [
-            { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5 },
-            { id: 'bat', name: '🏏 Bat', damage: 10, cost: 100, icon: '🏏', color: '#4ecdc4', particleCount: 8 },
-            { id: 'hammer', name: '🔨 Hammer', damage: 15, cost: 200, icon: '🔨', color: '#ffe66d', particleCount: 12 },
-            { id: 'knife', name: '🔪 Knife', damage: 20, cost: 300, icon: '🔪', color: '#ff6b9d', particleCount: 15 },
-            { id: 'gun', name: '🔫 Gun', damage: 30, cost: 500, icon: '🔫', color: '#c44569', particleCount: 20 },
-            { id: 'bomb', name: '💣 Bomb', damage: 50, cost: 800, icon: '💣', color: '#f38181', particleCount: 30 },
-            { id: 'lightning', name: '⚡ Lightning', damage: 75, cost: 1200, icon: '⚡', color: '#ffeb3b', particleCount: 40 },
-            { id: 'rocket', name: '🚀 Rocket', damage: 100, cost: 2000, icon: '🚀', color: '#ff5722', particleCount: 50 }
+            { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5, description: 'Basic melee attack', rarity: 'Common', fireRate: 'Fast' },
+            { id: 'bat', name: '🏏 Bat', damage: 10, cost: 0, icon: '🏏', color: '#4ecdc4', particleCount: 8, description: 'Swing with force', rarity: 'Common', fireRate: 'Fast' },
+            { id: 'hammer', name: '🔨 Hammer', damage: 15, cost: 0, icon: '🔨', color: '#ffe66d', particleCount: 12, description: 'Heavy crushing blow', rarity: 'Uncommon', fireRate: 'Medium' },
+            { id: 'knife', name: '🔪 Knife', damage: 20, cost: 0, icon: '🔪', color: '#ff6b9d', particleCount: 15, description: 'Sharp and deadly', rarity: 'Uncommon', fireRate: 'Fast' },
+            { id: 'gun', name: '🔫 Gun', damage: 30, cost: 0, icon: '🔫', color: '#c44569', particleCount: 20, description: 'Rapid fire weapon', rarity: 'Rare', fireRate: 'Very Fast' },
+            { id: 'bomb', name: '💣 Bomb', damage: 50, cost: 0, icon: '💣', color: '#f38181', particleCount: 30, description: 'Explosive damage', rarity: 'Rare', fireRate: 'Medium' },
+            { id: 'lightning', name: '⚡ Lightning', damage: 75, cost: 0, icon: '⚡', color: '#ffeb3b', particleCount: 40, description: 'Electrifying power', rarity: 'Epic', fireRate: 'Fast' },
+            { id: 'rocket', name: '🚀 Rocket', damage: 100, cost: 0, icon: '🚀', color: '#ff5722', particleCount: 50, description: 'Ultimate destruction', rarity: 'Legendary', fireRate: 'Medium' }
         ];
         this.selectedWeapon = this.weapons[0];
         
