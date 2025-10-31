@@ -49,6 +49,13 @@ class Game {
     private selectedWeapon: Weapon;
     private isGameOver: boolean = false;
     private audioContext: AudioContext;
+    private comboCount: number = 0;
+    private comboTimer: number | null = null;
+    private comboDisplay: HTMLElement;
+    private comboNumber: HTMLElement;
+    private finishHimScreen: HTMLElement;
+    private isFinishHimMode: boolean = false;
+    private lastHitTime: number = 0;
     
     private weapons: Weapon[] = [
         { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5, description: 'Basic melee attack', rarity: 'Common', fireRate: 'Fast' },
@@ -78,6 +85,9 @@ class Game {
         this.currentWeaponIcon = document.getElementById('currentWeaponIcon')!;
         this.weaponsOverlay = document.getElementById('weaponsOverlay')!;
         this.closeWeaponsBtn = document.getElementById('closeWeaponsBtn')!;
+        this.comboDisplay = document.getElementById('comboDisplay')!;
+        this.comboNumber = document.getElementById('comboNumber')!;
+        this.finishHimScreen = document.getElementById('finishHimScreen')!;
         
         this.selectedWeapon = this.weapons[0];
         this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -512,14 +522,25 @@ class Game {
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         
-        // Apply damage
-        const damage = this.selectedWeapon.damage;
+        // Update combo
+        this.updateCombo();
+        
+        // Apply damage (bonus damage for combos!)
+        const baseDamage = this.selectedWeapon.damage;
+        const comboMultiplier = 1 + (Math.min(this.comboCount, 20) * 0.1); // Max 3x damage at 20 combo
+        const damage = Math.floor(baseDamage * comboMultiplier);
+        
         this.health = Math.max(0, this.health - damage);
         this.totalDamage += damage;
         this.money += damage; // Earn money based on damage
         
         // Calculate health percentage
         const healthPercent = (this.health / this.maxHealth) * 100;
+        
+        // Check for Finish Him mode
+        if (healthPercent <= 15 && healthPercent > 0 && !this.isFinishHimMode) {
+            this.activateFinishHimMode();
+        }
         
         // Play weapon sound
         this.playWeaponSound(this.selectedWeapon.id);
@@ -537,13 +558,170 @@ class Game {
         
         // Visual effects
         this.showDamageNumber(event.clientX, event.clientY, damage);
-        this.createParticles(x, y, this.selectedWeapon.color, this.selectedWeapon.particleCount);
+        this.createParticles(x, y, this.selectedWeapon.color, this.selectedWeapon.particleCount * (this.isFinishHimMode ? 2 : 1));
         this.shakeBoss();
+        
+        // Extra shake for high combos
+        if (this.comboCount >= 10) {
+            this.screenShake();
+        }
         
         // Check game over
         if (this.health <= 0) {
-            this.endGame();
+            this.performFinisher();
         }
+    }
+
+    private updateCombo(): void {
+        const currentTime = Date.now();
+        const timeSinceLastHit = currentTime - this.lastHitTime;
+        
+        // Reset combo if more than 1.5 seconds between hits
+        if (timeSinceLastHit > 1500) {
+            this.comboCount = 0;
+        }
+        
+        this.comboCount++;
+        this.lastHitTime = currentTime;
+        
+        // Update combo display
+        if (this.comboCount >= 3) {
+            this.comboNumber.textContent = this.comboCount.toString();
+            this.comboDisplay.classList.add('active');
+            
+            // Add mega combo effect for high combos
+            if (this.comboCount >= 10) {
+                this.comboDisplay.classList.add('mega');
+            }
+            if (this.comboCount >= 20) {
+                this.comboDisplay.classList.add('ultra');
+            }
+        }
+        
+        // Reset combo timer
+        if (this.comboTimer) {
+            clearTimeout(this.comboTimer);
+        }
+        
+        this.comboTimer = window.setTimeout(() => {
+            this.resetCombo();
+        }, 1500);
+    }
+
+    private resetCombo(): void {
+        this.comboCount = 0;
+        this.comboDisplay.classList.remove('active', 'mega', 'ultra');
+    }
+
+    private activateFinishHimMode(): void {
+        this.isFinishHimMode = true;
+        this.finishHimScreen.classList.add('active');
+        
+        // Play dramatic sound
+        this.playFinishHimSound();
+        
+        // Screen flash effect
+        document.body.classList.add('finish-him-flash');
+        setTimeout(() => {
+            document.body.classList.remove('finish-him-flash');
+        }, 500);
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            this.finishHimScreen.classList.remove('active');
+        }, 3000);
+    }
+
+    private performFinisher(): void {
+        this.isGameOver = true;
+        
+        // FATALITY animation!
+        this.boss.classList.add('fatality');
+        
+        // Slow motion effect
+        this.boss.style.animation = 'fatalityMove 2s ease-out';
+        
+        // Play fatality sound
+        this.playFatalitySound();
+        
+        // Show FATALITY text
+        const fatalityText = document.createElement('div');
+        fatalityText.className = 'fatality-text';
+        fatalityText.textContent = 'FATALITY!';
+        this.damageNumbersContainer.appendChild(fatalityText);
+        
+        setTimeout(() => {
+            fatalityText.remove();
+            this.endGame();
+        }, 2500);
+    }
+
+    private screenShake(): void {
+        document.body.classList.add('screen-shake');
+        setTimeout(() => {
+            document.body.classList.remove('screen-shake');
+        }, 300);
+    }
+
+    private playFinishHimSound(): void {
+        const ctx = this.audioContext;
+        const time = ctx.currentTime;
+        
+        // Deep dramatic sound
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, time);
+        osc.frequency.exponentialRampToValueAtTime(50, time + 1);
+        
+        gain.gain.setValueAtTime(0.4, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 1);
+        
+        osc.start(time);
+        osc.stop(time + 1);
+    }
+
+    private playFatalitySound(): void {
+        const ctx = this.audioContext;
+        const time = ctx.currentTime;
+        
+        // Epic victory sound
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(400, time);
+        osc1.frequency.exponentialRampToValueAtTime(800, time + 0.5);
+        
+        gain1.gain.setValueAtTime(0.3, time);
+        gain1.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+        
+        osc1.start(time);
+        osc1.stop(time + 0.5);
+        
+        // Add explosion
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(100, time + 0.5);
+        osc2.frequency.exponentialRampToValueAtTime(30, time + 1.5);
+        
+        gain2.gain.setValueAtTime(0.5, time + 0.5);
+        gain2.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+        
+        osc2.start(time + 0.5);
+        osc2.stop(time + 1.5);
     }
 
     private createParticles(x: number, y: number, color: string, count: number): void {
@@ -667,6 +845,9 @@ class Game {
         this.money = 1000;
         this.isGameOver = false;
         this.particles = [];
+        this.comboCount = 0;
+        this.isFinishHimMode = false;
+        this.resetCombo();
         
         // Reset weapon costs (all free)
         this.weapons = [
