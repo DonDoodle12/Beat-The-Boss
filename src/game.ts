@@ -325,6 +325,108 @@ class Game {
         osc2.stop(time + 0.4);
     }
 
+    // Boss Hurt Sound - Pain grunt (varies by health)
+    private playBossHurtSound(healthPercent: number): void {
+        const ctx = this.audioContext;
+        const time = ctx.currentTime;
+        
+        // Intensity increases as health decreases
+        const intensity = 1 - (healthPercent / 100);
+        
+        // Voice-like grunt sound
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sawtooth';
+        
+        if (healthPercent < 30) {
+            // Desperate/painful scream
+            osc.frequency.setValueAtTime(300, time);
+            osc.frequency.linearRampToValueAtTime(450, time + 0.1);
+            osc.frequency.exponentialRampToValueAtTime(200, time + 0.3);
+            gain.gain.setValueAtTime(0.4, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+            osc.start(time);
+            osc.stop(time + 0.3);
+        } else if (healthPercent < 60) {
+            // Moderate pain grunt
+            osc.frequency.setValueAtTime(250, time);
+            osc.frequency.exponentialRampToValueAtTime(150, time + 0.2);
+            gain.gain.setValueAtTime(0.3, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+            osc.start(time);
+            osc.stop(time + 0.2);
+        } else {
+            // Light grunt
+            osc.frequency.setValueAtTime(200, time);
+            osc.frequency.exponentialRampToValueAtTime(120, time + 0.15);
+            gain.gain.setValueAtTime(0.25, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+            osc.start(time);
+            osc.stop(time + 0.15);
+        }
+    }
+
+    // Boss Death Sound - Dramatic defeat
+    private playBossDeathSound(): void {
+        const ctx = this.audioContext;
+        const time = ctx.currentTime;
+        
+        // Long descending scream
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(400, time);
+        osc1.frequency.exponentialRampToValueAtTime(100, time + 0.8);
+        
+        gain1.gain.setValueAtTime(0.4, time);
+        gain1.gain.linearRampToValueAtTime(0.3, time + 0.4);
+        gain1.gain.exponentialRampToValueAtTime(0.01, time + 0.8);
+        
+        osc1.start(time);
+        osc1.stop(time + 0.8);
+        
+        // Add wobble effect for drama
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(350, time);
+        osc2.frequency.exponentialRampToValueAtTime(80, time + 0.8);
+        
+        gain2.gain.setValueAtTime(0.3, time);
+        gain2.gain.exponentialRampToValueAtTime(0.01, time + 0.8);
+        
+        osc2.start(time);
+        osc2.stop(time + 0.8);
+        
+        // Final thud
+        const osc3 = ctx.createOscillator();
+        const gain3 = ctx.createGain();
+        
+        osc3.connect(gain3);
+        gain3.connect(ctx.destination);
+        
+        osc3.frequency.setValueAtTime(60, time + 0.8);
+        osc3.frequency.exponentialRampToValueAtTime(30, time + 1.0);
+        
+        gain3.gain.setValueAtTime(0.5, time + 0.8);
+        gain3.gain.exponentialRampToValueAtTime(0.01, time + 1.0);
+        
+        osc3.start(time + 0.8);
+        osc3.stop(time + 1.0);
+    }
+
     private renderWeapons(): void {
         this.weaponsGrid.innerHTML = '';
         
@@ -416,8 +518,16 @@ class Game {
         this.totalDamage += damage;
         this.money += damage; // Earn money based on damage
         
+        // Calculate health percentage
+        const healthPercent = (this.health / this.maxHealth) * 100;
+        
         // Play weapon sound
         this.playWeaponSound(this.selectedWeapon.id);
+        
+        // Play boss hurt sound (only if not dead)
+        if (this.health > 0) {
+            setTimeout(() => this.playBossHurtSound(healthPercent), 100);
+        }
         
         // Update UI
         this.updateHealth();
@@ -540,6 +650,9 @@ class Game {
     private endGame(): void {
         this.isGameOver = true;
         this.boss.classList.add('defeated');
+        
+        // Play dramatic death sound
+        this.playBossDeathSound();
         
         setTimeout(() => {
             this.gameOverScreen.classList.add('show');
