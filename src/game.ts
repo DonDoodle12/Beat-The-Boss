@@ -48,6 +48,7 @@ class Game {
     private particles: Particle[] = [];
     private selectedWeapon: Weapon;
     private isGameOver: boolean = false;
+    private audioContext: AudioContext;
     
     private weapons: Weapon[] = [
         { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5, description: 'Basic melee attack', rarity: 'Common', fireRate: 'Fast' },
@@ -79,6 +80,7 @@ class Game {
         this.closeWeaponsBtn = document.getElementById('closeWeaponsBtn')!;
         
         this.selectedWeapon = this.weapons[0];
+        this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         
         this.setupCanvas();
         this.setupEventListeners();
@@ -118,6 +120,209 @@ class Game {
         this.weaponsPanel.classList.remove('open');
         this.weaponsOverlay.classList.remove('active');
         document.body.style.overflow = '';
+    }
+
+    private playWeaponSound(weaponId: string): void {
+        const ctx = this.audioContext;
+        const currentTime = ctx.currentTime;
+
+        switch(weaponId) {
+            case 'punch':
+                this.playPunchSound(ctx, currentTime);
+                break;
+            case 'bat':
+                this.playBatSound(ctx, currentTime);
+                break;
+            case 'hammer':
+                this.playHammerSound(ctx, currentTime);
+                break;
+            case 'knife':
+                this.playKnifeSound(ctx, currentTime);
+                break;
+            case 'gun':
+                this.playGunSound(ctx, currentTime);
+                break;
+            case 'bomb':
+                this.playBombSound(ctx, currentTime);
+                break;
+            case 'lightning':
+                this.playLightningSound(ctx, currentTime);
+                break;
+            case 'rocket':
+                this.playRocketSound(ctx, currentTime);
+                break;
+        }
+    }
+
+    // Punch - Short low thump
+    private playPunchSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(100, time);
+        osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
+        
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+        
+        osc.start(time);
+        osc.stop(time + 0.1);
+    }
+
+    // Bat - Swing whoosh
+    private playBatSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, time);
+        osc.frequency.exponentialRampToValueAtTime(800, time + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(100, time + 0.15);
+        
+        gain.gain.setValueAtTime(0.2, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+        
+        osc.start(time);
+        osc.stop(time + 0.15);
+    }
+
+    // Hammer - Heavy thud
+    private playHammerSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.setValueAtTime(80, time);
+        osc.frequency.exponentialRampToValueAtTime(30, time + 0.2);
+        
+        gain.gain.setValueAtTime(0.4, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+        
+        osc.start(time);
+        osc.stop(time + 0.2);
+    }
+
+    // Knife - Sharp slash
+    private playKnifeSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1000, time);
+        osc.frequency.exponentialRampToValueAtTime(2000, time + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(500, time + 0.1);
+        
+        gain.gain.setValueAtTime(0.2, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+        
+        osc.start(time);
+        osc.stop(time + 0.1);
+    }
+
+    // Gun - Bang!
+    private playGunSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(500, time);
+        osc.frequency.exponentialRampToValueAtTime(100, time + 0.05);
+        
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+        
+        osc.start(time);
+        osc.stop(time + 0.05);
+    }
+
+    // Bomb - Explosion
+    private playBombSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, time);
+        osc.frequency.exponentialRampToValueAtTime(40, time + 0.3);
+        
+        gain.gain.setValueAtTime(0.5, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+        
+        osc.start(time);
+        osc.stop(time + 0.3);
+    }
+
+    // Lightning - Electric zap
+    private playLightningSound(ctx: AudioContext, time: number): void {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(2000, time);
+        osc.frequency.exponentialRampToValueAtTime(100, time + 0.15);
+        
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.linearRampToValueAtTime(0.1, time + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+        
+        osc.start(time);
+        osc.stop(time + 0.15);
+    }
+
+    // Rocket - Whoosh and boom
+    private playRocketSound(ctx: AudioContext, time: number): void {
+        // Whoosh
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(400, time);
+        osc1.frequency.exponentialRampToValueAtTime(1200, time + 0.2);
+        
+        gain1.gain.setValueAtTime(0.2, time);
+        gain1.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+        
+        osc1.start(time);
+        osc1.stop(time + 0.2);
+        
+        // Explosion
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(150, time + 0.15);
+        osc2.frequency.exponentialRampToValueAtTime(50, time + 0.4);
+        
+        gain2.gain.setValueAtTime(0.5, time + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
+        
+        osc2.start(time + 0.15);
+        osc2.stop(time + 0.4);
     }
 
     private renderWeapons(): void {
@@ -210,6 +415,9 @@ class Game {
         this.health = Math.max(0, this.health - damage);
         this.totalDamage += damage;
         this.money += damage; // Earn money based on damage
+        
+        // Play weapon sound
+        this.playWeaponSound(this.selectedWeapon.id);
         
         // Update UI
         this.updateHealth();
