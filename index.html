@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat the Boss</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>BEAT THE BOSS</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Health</span>
+                    <div class="health-bar-container">
+                        <div class="health-bar" id="healthBar"></div>
+                        <span class="health-text" id="healthText">100%</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Damage</span>
+                    <span class="stat-value" id="totalDamage">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Money</span>
+                    <span class="stat-value" id="money">$1000</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <canvas id="gameCanvas"></canvas>
+            <div class="boss-container" id="bossContainer">
+                <div class="boss" id="boss">
+                    <div class="boss-face">
+                        <div class="boss-eyes">
+                            <div class="eye left-eye"></div>
+                            <div class="eye right-eye"></div>
+                        </div>
+                        <div class="boss-mouth"></div>
+                    </div>
+                    <div class="boss-body"></div>
+                </div>
+            </div>
+            <div class="damage-numbers" id="damageNumbers"></div>
+        </div>
+
+        <div class="weapons-panel">
+            <h3>WEAPONS</h3>
+            <div class="weapons-grid" id="weaponsGrid">
+                <!-- Weapons will be dynamically added -->
+            </div>
+        </div>
+
+        <div class="game-over-screen" id="gameOverScreen">
+            <h2>BOSS DEFEATED!</h2>
+            <p>Total Damage: <span id="finalDamage">0</span></p>
+            <p>Money Earned: <span id="moneyEarned">$0</span></p>
+            <button class="btn-restart" id="restartBtn">FIGHT AGAIN</button>
+        </div>
+    </div>
+
+    <script src="dist/game.js"></script>
+</body>
+</html>
+
