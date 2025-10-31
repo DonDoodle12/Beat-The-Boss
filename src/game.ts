@@ -527,7 +527,7 @@ class Game {
         
         // Apply damage (bonus damage for combos!)
         const baseDamage = this.selectedWeapon.damage;
-        const comboMultiplier = 1 + (Math.min(this.comboCount, 20) * 0.1); // Max 3x damage at 20 combo
+        const comboMultiplier = 1 + (Math.min(this.comboCount, 10) * 0.1); // Max 2x damage at 10 combo
         const damage = Math.floor(baseDamage * comboMultiplier);
         
         this.health = Math.max(0, this.health - damage);
@@ -538,7 +538,7 @@ class Game {
         const healthPercent = (this.health / this.maxHealth) * 100;
         
         // Check for Finish Him mode
-        if (healthPercent <= 15 && healthPercent > 0 && !this.isFinishHimMode) {
+        if (healthPercent <= 7 && healthPercent > 0 && !this.isFinishHimMode) {
             this.activateFinishHimMode();
         }
         
@@ -593,9 +593,6 @@ class Game {
             if (this.comboCount >= 10) {
                 this.comboDisplay.classList.add('mega');
             }
-            if (this.comboCount >= 20) {
-                this.comboDisplay.classList.add('ultra');
-            }
         }
         
         // Reset combo timer
@@ -635,25 +632,39 @@ class Game {
     private performFinisher(): void {
         this.isGameOver = true;
         
-        // FATALITY animation!
-        this.boss.classList.add('fatality');
+        // Choose random finisher!
+        const finishers = [
+            { name: 'FATALITY!', animation: 'fatalityMove', duration: 2500 },
+            { name: 'K.O.!', animation: 'koMove', duration: 2000 },
+            { name: 'DESTROYED!', animation: 'destroyedMove', duration: 2300 },
+            { name: 'OVERKILL!', animation: 'overkillMove', duration: 2500 },
+            { name: 'REKT!', animation: 'rektMove', duration: 2200 }
+        ];
         
-        // Slow motion effect
-        this.boss.style.animation = 'fatalityMove 2s ease-out';
+        const randomFinisher = finishers[Math.floor(Math.random() * finishers.length)];
+        
+        // Apply animation
+        this.boss.classList.add('fatality');
+        this.boss.style.animation = `${randomFinisher.animation} 2s ease-out`;
         
         // Play fatality sound
         this.playFatalitySound();
         
-        // Show FATALITY text
+        // Show finisher text
         const fatalityText = document.createElement('div');
         fatalityText.className = 'fatality-text';
-        fatalityText.textContent = 'FATALITY!';
+        fatalityText.textContent = randomFinisher.name;
+        
+        // Random color for text
+        const colors = ['#FFD700', '#FF0000', '#00FF00', '#FF00FF', '#00FFFF'];
+        fatalityText.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
         this.damageNumbersContainer.appendChild(fatalityText);
         
         setTimeout(() => {
             fatalityText.remove();
             this.endGame();
-        }, 2500);
+        }, randomFinisher.duration);
     }
 
     private screenShake(): void {
