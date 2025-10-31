@@ -56,6 +56,8 @@ class Game {
     private finishHimScreen: HTMLElement;
     private isFinishHimMode: boolean = false;
     private lastHitTime: number = 0;
+    private lastFrameTime: number = 0;
+    private fps: number = 0;
     
     private weapons: Weapon[] = [
         { id: 'punch', name: '👊 Punch', damage: 5, cost: 0, icon: '👊', color: '#ff6b6b', particleCount: 5, description: 'Basic melee attack', rarity: 'Common', fireRate: 'Fast' },
@@ -757,16 +759,19 @@ class Game {
         }
     }
 
-    private updateParticles(): void {
+    private updateParticles(deltaTime: number = 1): void {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Adjust for high refresh rates (normalize to 60 FPS baseline)
+        const timeFactor = deltaTime / (1000 / 60);
         
         for (let i = this.particles.length - 1; i >= 0; i--) {
             const p = this.particles[i];
             
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += 0.2; // gravity
-            p.life -= 0.02;
+            p.x += p.vx * timeFactor;
+            p.y += p.vy * timeFactor;
+            p.vy += 0.2 * timeFactor; // gravity
+            p.life -= 0.02 * timeFactor;
             
             if (p.life <= 0) {
                 this.particles.splice(i, 1);
@@ -882,9 +887,21 @@ class Game {
         this.renderWeapons();
     }
 
-    private gameLoop(): void {
-        this.updateParticles();
-        requestAnimationFrame(() => this.gameLoop());
+    private gameLoop(timestamp: number = 0): void {
+        // Calculate delta time for smooth animations on any refresh rate
+        const deltaTime = timestamp - this.lastFrameTime;
+        this.lastFrameTime = timestamp;
+        
+        // Calculate FPS (optional, for monitoring)
+        if (deltaTime > 0) {
+            this.fps = 1000 / deltaTime;
+        }
+        
+        // Update particles with delta time for consistent speed
+        this.updateParticles(deltaTime);
+        
+        // Request next frame with timestamp
+        requestAnimationFrame((t) => this.gameLoop(t));
     }
 }
 

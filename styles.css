@@ -4,6 +4,30 @@
     box-sizing: border-box;
 }
 
+/* GPU Acceleration & Performance Optimization */
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force GPU acceleration on animated elements */
+.boss,
+.weapon-card,
+.damage-number,
+.combo-display,
+.weapon-selector-btn,
+.particle,
+.game-area::before,
+.game-area::after,
+.boss-face,
+.boss-body,
+.eye {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
 body {
     font-family: 'Arial Black', Arial, sans-serif;
     background: #87CEEB;
@@ -257,12 +281,14 @@ body::after {
         0 15px 40px rgba(0, 0, 0, 0.4),
         inset -10px -10px 20px rgba(0, 0, 0, 0.2),
         inset 10px 10px 20px rgba(255, 255, 255, 0.4);
-    animation: bobbing 2s ease-in-out infinite;
+    animation: bobbing 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 @keyframes bobbing {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
+    0%, 100% { transform: translateY(0) rotate(0deg) translateZ(0); }
+    50% { transform: translateY(-10px) rotate(2deg) translateZ(0); }
 }
 
 .boss-eyes {
@@ -396,12 +422,12 @@ body::after {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
-    10% { transform: translateX(-15px) rotate(-8deg) scale(1.05); }
-    30% { transform: translateX(15px) rotate(8deg) scale(1.05); }
-    50% { transform: translateX(-10px) rotate(-5deg) scale(1.03); }
-    70% { transform: translateX(10px) rotate(5deg) scale(1.03); }
-    90% { transform: translateX(-5px) rotate(-2deg) scale(1.01); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+    10% { transform: translate3d(-15px, 0, 0) rotate(-8deg) scale(1.05); }
+    30% { transform: translate3d(15px, 0, 0) rotate(8deg) scale(1.05); }
+    50% { transform: translate3d(-10px, 0, 0) rotate(-5deg) scale(1.03); }
+    70% { transform: translate3d(10px, 0, 0) rotate(5deg) scale(1.03); }
+    90% { transform: translate3d(-5px, 0, 0) rotate(-2deg) scale(1.01); }
 }
 
 @keyframes defeat {
@@ -452,11 +478,11 @@ body::after {
 @keyframes floatUp {
     0% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateY(-100px) scale(1.5);
+        transform: translate3d(0, -100px, 0) scale(1.5);
     }
 }
 
@@ -480,9 +506,11 @@ body::after {
         0 0 30px rgba(255, 215, 0, 0.6),
         inset 0 5px 15px rgba(255, 255, 255, 0.3),
         inset 0 -5px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 100;
-    animation: buttonPulse 2s ease-in-out infinite, buttonRotate 4s linear infinite;
+    animation: buttonPulse 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite, buttonRotate 4s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 @keyframes buttonRotate {
@@ -1368,16 +1396,16 @@ body.screen-shake {
 }
 
 @keyframes screenShake {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-20px, 10px); }
-    20% { transform: translate(20px, -10px); }
-    30% { transform: translate(-15px, -15px); }
-    40% { transform: translate(15px, 15px); }
-    50% { transform: translate(-10px, -10px); }
-    60% { transform: translate(10px, 10px); }
-    70% { transform: translate(-5px, 5px); }
-    80% { transform: translate(5px, -5px); }
-    90% { transform: translate(-2px, 2px); }
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    10% { transform: translate3d(-20px, 10px, 0); }
+    20% { transform: translate3d(20px, -10px, 0); }
+    30% { transform: translate3d(-15px, -15px, 0); }
+    40% { transform: translate3d(15px, 15px, 0); }
+    50% { transform: translate3d(-10px, -10px, 0); }
+    60% { transform: translate3d(10px, 10px, 0); }
+    70% { transform: translate3d(-5px, 5px, 0); }
+    80% { transform: translate3d(5px, -5px, 0); }
+    90% { transform: translate3d(-2px, 2px, 0); }
 }
 
 /* Finish Him Flash Effect */
