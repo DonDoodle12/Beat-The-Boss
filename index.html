@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Weapons Panel (Always visible left sidebar) -->
+    <div class="weapons-panel" id="weaponsPanel">
+        <div class="weapons-panel-header">
+            <h3>SELECT WEAPON</h3>
+            <button class="close-weapons-btn" id="closeWeaponsBtn">✕</button>
+        </div>
+        <div class="weapons-grid" id="weaponsGrid">
+            <!-- Weapons will be dynamically added -->
+        </div>
+    </div>
+    
     <div class="game-container">
         <div class="header">
             <h1>BEAT THE BOSS</h1>
@@ -63,17 +74,6 @@
             <div class="weapon-selector-label">WEAPONS</div>
         </button>
 
-        <!-- Weapons Panel (Hidden by default) -->
-        <div class="weapons-panel" id="weaponsPanel">
-            <div class="weapons-panel-header">
-                <h3>SELECT WEAPON</h3>
-                <button class="close-weapons-btn" id="closeWeaponsBtn">✕</button>
-            </div>
-            <div class="weapons-grid" id="weaponsGrid">
-                <!-- Weapons will be dynamically added -->
-            </div>
-        </div>
-        
         <!-- Overlay for weapon panel -->
         <div class="weapons-overlay" id="weaponsOverlay"></div>
 
