@@ -117,15 +117,23 @@ class Game {
         restartBtn.addEventListener('click', () => this.restart());
         
         // Weapon selector button
-        this.weaponSelectorBtn.addEventListener('click', () => this.openWeaponsPanel());
+        console.log('Setting up weapon selector button:', this.weaponSelectorBtn);
+        this.weaponSelectorBtn.addEventListener('click', () => {
+            console.log('Weapon button clicked!');
+            this.openWeaponsPanel();
+        });
         this.closeWeaponsBtn.addEventListener('click', () => this.closeWeaponsPanel());
         this.weaponsOverlay.addEventListener('click', () => this.closeWeaponsPanel());
     }
     
     private openWeaponsPanel(): void {
+        console.log('Opening weapons panel...');
+        console.log('Panel element:', this.weaponsPanel);
+        console.log('Overlay element:', this.weaponsOverlay);
         this.weaponsPanel.classList.add('open');
         this.weaponsOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        console.log('Panel classes:', this.weaponsPanel.className);
     }
     
     private closeWeaponsPanel(): void {
