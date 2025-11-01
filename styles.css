@@ -90,6 +90,7 @@ body::after {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    margin-left: 140px;
 }
 
 /* Header */
@@ -486,31 +487,9 @@ body::after {
     }
 }
 
-/* Floating Weapon Selector Button */
+/* Floating Weapon Selector Button - HIDDEN */
 .weapon-selector-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 90px;
-    height: 90px;
-    background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
-    border: 5px solid #00BCD4;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.5), 
-        0 0 30px rgba(33, 150, 243, 0.6),
-        inset 0 5px 15px rgba(255, 255, 255, 0.3),
-        inset 0 -5px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 100;
-    animation: buttonPulse 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite, buttonRotate 4s linear infinite;
-    will-change: transform;
-    transform: translateZ(0);
+    display: none !important;
 }
 
 @keyframes buttonRotate {
@@ -567,60 +546,34 @@ body::after {
     letter-spacing: 1px;
 }
 
-/* Weapons Overlay */
+/* Weapons Overlay - HIDDEN */
 .weapons-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 900;
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    display: none !important;
 }
 
-.weapons-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Weapons Panel */
+/* Weapons Panel - Left Sidebar */
 .weapons-panel {
     position: fixed;
-    bottom: 0;
     left: 0;
-    right: 0;
-    max-height: 70vh;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.98) 100%);
-    padding: 0;
-    border-radius: 30px 30px 0 0;
+    top: 0;
+    bottom: 0;
+    width: 140px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.98) 100%);
+    padding: 15px 10px;
     backdrop-filter: blur(20px);
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    border-bottom: none;
-    box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.7);
+    border-right: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 5px 0 30px rgba(0, 0, 0, 0.7);
     z-index: 1000;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    overflow: hidden;
-    display: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex !important;
     flex-direction: column;
-}
-
-.weapons-panel.open {
-    transform: translateY(0);
+    gap: 15px;
+    padding-top: 100px;
 }
 
 .weapons-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 25px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+    display: none;
 }
 
 .close-weapons-btn {
@@ -657,12 +610,12 @@ body::after {
 }
 
 .weapons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
     overflow-y: auto;
-    max-height: calc(70vh - 80px);
+    padding: 0;
 }
 
 .weapons-grid::-webkit-scrollbar {
@@ -686,15 +639,20 @@ body::after {
 .weapon-card {
     background: linear-gradient(135deg, rgba(30, 30, 50, 0.9) 0%, rgba(15, 15, 30, 0.95) 100%);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    padding: 0;
+    border-radius: 12px;
+    padding: 10px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .weapon-card::before {
@@ -714,31 +672,30 @@ body::after {
 }
 
 .weapon-card:hover {
-    transform: translateY(-10px) scale(1.03);
+    transform: translateX(5px) scale(1.05);
     background: linear-gradient(135deg, rgba(40, 40, 60, 0.95) 0%, rgba(25, 25, 45, 1) 100%);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.3);
 }
 
 .weapon-card.selected {
     border-color: #ffd700;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 180, 0, 0.15) 100%);
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 10px 30px rgba(0, 0, 0, 0.4);
-    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 180, 0, 0.2) 100%);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 5px 15px rgba(0, 0, 0, 0.4);
+    transform: translateX(5px);
 }
 
 .weapon-card.selected::after {
-    content: '✓ EQUIPPED';
+    content: '✓';
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 5px;
     background: #ffd700;
     color: #000;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.65em;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-size: 0.7em;
     font-weight: bold;
-    letter-spacing: 1px;
     box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
 }
 
@@ -755,9 +712,7 @@ body::after {
 
 /* Weapon Card Sections */
 .weapon-header {
-    padding: 10px 15px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
 }
 
 .weapon-rarity {
@@ -808,14 +763,14 @@ body::after {
 
 .weapon-icon-container {
     position: relative;
-    padding: 20px;
+    padding: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .weapon-icon {
-    font-size: 4em;
+    font-size: 3em;
     position: relative;
     z-index: 2;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
@@ -844,10 +799,7 @@ body::after {
 }
 
 .weapon-info {
-    padding: 10px 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(0, 0, 0, 0.2);
+    display: none;
 }
 
 .weapon-name {
@@ -867,8 +819,7 @@ body::after {
 }
 
 .weapon-stats {
-    padding: 12px 15px;
-    background: rgba(0, 0, 0, 0.15);
+    display: none;
 }
 
 .stat-row {
@@ -911,9 +862,7 @@ body::after {
 }
 
 .weapon-footer {
-    padding: 12px 15px;
-    background: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
 }
 
 .weapon-cost {
