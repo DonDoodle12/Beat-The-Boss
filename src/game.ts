@@ -130,16 +130,34 @@ class Game {
         console.log('Opening weapons panel...');
         console.log('Panel element:', this.weaponsPanel);
         console.log('Overlay element:', this.weaponsOverlay);
+        
+        // Force visibility and positioning
+        this.weaponsPanel.style.display = 'flex';
+        this.weaponsPanel.style.visibility = 'visible';
+        this.weaponsOverlay.style.display = 'block';
+        this.weaponsOverlay.style.visibility = 'visible';
+        
+        // Add classes
         this.weaponsPanel.classList.add('open');
         this.weaponsOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        
         console.log('Panel classes:', this.weaponsPanel.className);
+        console.log('Panel transform:', window.getComputedStyle(this.weaponsPanel).transform);
     }
     
     private closeWeaponsPanel(): void {
         this.weaponsPanel.classList.remove('open');
         this.weaponsOverlay.classList.remove('active');
         document.body.style.overflow = '';
+        
+        // Hide after animation completes
+        setTimeout(() => {
+            if (!this.weaponsPanel.classList.contains('open')) {
+                this.weaponsPanel.style.display = 'none';
+                this.weaponsOverlay.style.display = 'none';
+            }
+        }, 400); // Match the CSS transition duration
     }
 
     private playWeaponSound(weaponId: string): void {
