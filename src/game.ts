@@ -97,6 +97,11 @@ class Game {
         this.setupCanvas();
         this.setupEventListeners();
         this.renderWeapons();
+        
+        // Force weapons panel to be visible (left sidebar is always visible)
+        this.weaponsPanel.style.display = 'flex';
+        this.weaponsPanel.style.visibility = 'visible';
+        
         this.gameLoop();
     }
 
